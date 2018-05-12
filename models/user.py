@@ -24,6 +24,8 @@ class User(BaseModel):
         'location',
         'msg_signature',
         'msg_count',
+        'is_staff',
+        'is_admin',
     )
 
     @classmethod

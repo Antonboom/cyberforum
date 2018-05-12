@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cyberforum</title>
+</head>
+<body>
+    <header>
+        <div class="title">
+            <h3>Форум программистов и сисадминов</h3>
+        </div>
+        <div class="profile">
+            <a href="/login">Войти</a><br/>
+            <a href="/registration">Регистрация</a>
+        </div>
+    </header>
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+        <div class="description">
+            <p>
+                Антон Телышев, ИУ6-11М</br>
+                Курсовая работа по дисциплине «Сетевые базы данных»</br>
+                Москва, 2018 г.</br>
+            </p>
+        </div>
+    </footer>
+
+    <style>
+        body {
+            font-size: 10px;
+            background: white;
+            padding: .5rem 2rem;
+            font-family: Lucida Grande,Lucida Sans Unicode,Lucida Sans,Geneva,Verdana,sans-serif;
+        }
+        header {
+            font-size: 1.2rem;
+            background: #F6F6F6;
+            color: #000000;
+            border: .05rem solid #0B198C;
+            padding: 1rem;
+            min-height: 3rem;
+            margin-left: .5rem;
+            margin-right: .5rem;
+        }
+        header .profile {
+            float: right;
+        }
+        header .title {
+            float: left;
+            margin-top: 0.7rem;
+        }
+        header .title h3 {
+            margin: 0;
+        }
+
+        footer {
+            text-align: right;
+        }
+    </style>
+</body>
+</html>

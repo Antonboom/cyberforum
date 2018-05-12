@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>{{ section.title }}</h3>
+    {% for subsection in subsections %}
+        <p>{{ subsection.title }}</p>
+    {% endfor %}
+{% endblock %}

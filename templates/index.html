@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="forums">
+        {% for id, forum in forums.items() %}
+            <div class="forums__forum">
+                <div class="forums__forum__title">
+                    {{ forum['title'] }}
+                </div>
+
+                {% for _, section in forum['sections'].items() %}
+                    <div class="forums__forum__section">
+                        <a href="/" class="forums__forum__section__title">
+                            <h3>{{ section['title'] }}</h3>
+                        </a>
+                        <div class="forums__forum__section__info">
+                            Тем: {{ section['threads_count'] }}
+                        </div>
+
+                        <div class="forums__forum__section__subsections">
+                            {% for subsection in section['subsections'] %}
+                                <div class="forums__forum__section__subsections__subsection">
+                                    <img src="//cyberstatic.net/images/statusicon/subforum_new.gif">
+                                    <a href="/">{{ subsection['title'] }}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <style>
+        .forums {
+            font-size: 0;
+            -moz-column-width: 50rem;
+            -webkit-column-width: 50rem;
+            column-width: 50rem;
+        }
+        .forums__forum {
+            font-size: 1rem;
+            margin-top: 1rem;
+            background: #F6F6F6;
+            color: #000000;
+            border: .05rem solid #0B198C;
+            margin-left: .5rem;
+            margin-right: .5rem;
+            vertical-align: top;
+            display: inline-block;
+        }
+        .forums__forum__title {
+            background: #3774A4;
+            color: #FFFFFF;
+            font-weight: bold;
+            padding: 0.5rem;
+        }
+        .forums__forum__section {
+            padding: 0.5rem 1rem 1rem;
+            border-bottom: .05rem gray solid;
+        }
+        .forums__forum__section__title {
+            color: #000080;
+            text-decoration: underline;
+        }
+        .forums__forum__section__info {
+            font-size: 0.8rem;
+            margin-top: -1rem;
+            margin-bottom: .5rem;
+        }
+        .forums__forum__section__subsections {
+            margin-left: 2rem;
+            font-size: 0;
+        }
+        .forums__forum__section__subsections__subsection {
+            font-size: .9rem;
+            display: inline-block;
+            width: 45%;
+            padding: .2rem 0;
+        }
+        .forums__forum__section__subsections__subsection a {
+            color: #000080;
+            text-decoration: underline;
+        }
+
+    </style>
+{% endblock %}
