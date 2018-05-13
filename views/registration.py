@@ -3,7 +3,7 @@ from flask import request, Response
 from app import app
 
 
-@app.route('/registration', methods=('GET', 'POST',))
+@app.route('/registration/', methods=('GET', 'POST',))
 def register():
     if request.method == 'POST':
         pass

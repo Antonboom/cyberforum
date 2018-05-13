@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Cyberforum</title>
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+          crossorigin="anonymous">
 </head>
 <body>
     <header>
         <div class="title">
-            <h3>Форум программистов и сисадминов</h3>
+            <a href="/"><h3>Компьютерный форум</h3></a>
         </div>
         <div class="profile">
             <a href="/login">Войти</a><br/>
@@ -20,9 +24,10 @@
     <footer>
         <div class="description">
             <p>
-                Антон Телышев, ИУ6-11М</br>
-                Курсовая работа по дисциплине «Сетевые базы данных»</br>
-                Москва, 2018 г.</br>
+                Антон Телышев, ИУ6-11М<br/>
+                Курсовая работа по дисциплине «Сетевые базы данных»<br/>
+                МГТУ им. Н.Э. Баумана<br/>
+                Москва, 2018 г.<br/>
             </p>
         </div>
     </footer>
@@ -43,6 +48,14 @@
             min-height: 3rem;
             margin-left: .5rem;
             margin-right: .5rem;
+        }
+        header a {
+            color: black;
+            text-decoration: none;
+        }
+        header a:hover,
+        header a:focus {
+            text-decoration: underline;
         }
         header .profile {
             float: right;

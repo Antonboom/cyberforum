@@ -159,4 +159,7 @@ if current_users_count < ANSWERS_COUNT:
         if i and (i % 20000) == 0:
             print(f' - Created {i} answers')
 
+# Set last answer time for threads
+# ...
+
 print('Complete')

@@ -1,8 +1,241 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>{{ section.title }}</h3>
-    {% for subsection in subsections %}
-        <p>{{ subsection.title }}</p>
-    {% endfor %}
+    <div class="section_page">
+        <div class="section_page__bread_crumbs">
+            <a href="/">Компьютерный форум</a> >
+            {{ forum.title }} >
+            {% if parent_section %}
+                <a href="/section/{{ parent_section.id }}">{{ parent_section.title }}</a> >
+            {% endif %}
+            {{ section.title }}
+        </div>
+
+        {% if subsections %}
+            <div class="section_page__subsections">
+                <div class="section_page__subsections__title">
+                    Подразделы раздела <b>«{{ section.title }}»</b>
+                </div>
+                <div class="section_page__subsections__list">
+                    {% for subsection in subsections %}
+                        <div class="section_page__subsections__list__item">
+                            <div class="section_page__subsections__list__item__title">
+                                <img src="//cyberstatic.net/images/statusicon/forum_new.gif">
+                                <a href="/section/{{ subsection.id }}/">{{ subsection.title }}</a>
+                            </div>
+                            <div class="section_page__subsections__list__item__threads_count">
+                                {{ '{:,}'.format(subsection.threads_count) }} тем
+                            </div>
+                            <div class="section_page__subsections__list__item__answers_count">
+                                {{ '{:,}'.format(subsection.answers_count) }} ответов
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="section_page__threads">
+            <div class="section_page__threads__title">
+                Темы раздела <b>«{{ section.title }}»</b>
+            </div>
+            <div class="section_page__threads__header">
+                <div class="section_page__threads__header__title">
+                    <span>Тема / автор</span>
+                </div>
+                <div class="section_page__threads__header__last_answer">
+                    <span>Последнее сообщение</span>
+                </div>
+                <div class="section_page__threads__header__answers_count">
+                    <span>Ответов</span>
+                </div>
+            </div>
+
+            <div class="section_page__threads__list">
+                {% for thread in threads %}
+                    <div class="section_page__threads__list__item">
+                        <div class="section_page__threads__list__item__title">
+                            <a href="/thread/{{ thread['id'] }}/">{{ thread['title'] }}</a>
+                            <div class="section_page__threads__list__item__title__user">
+                                <i class="fa fa-calendar"></i> {{ thread['created_at'] }}
+                                <i class="fa fa-user"></i> {{ thread['username'] }}
+                            </div>
+                        </div>
+                        <div class="section_page__threads__list__item__last_answer">
+                            {{ thread['last_answer_time'] }}
+                        </div>
+                        <div class="section_page__threads__list__item__answers_count">
+                            {{ thread['answers_count'] }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if prev_page or next_page %}
+            <div class="section_page__paginator">
+                <div class="section_page__paginator__prev_page">
+                    {% if prev_page %}
+                        <a href="/section/{{ section.id }}/?page={{ prev_page }}">
+                            <i class="fa fa-chevron-circle-left"></i> Предыдущая страница
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="section_page__paginator__curr_page">
+                    Страница {{ curr_page }}
+                </div>
+
+                <div class="section_page__paginator__next_page">
+                    {% if next_page %}
+                        <a href="/section/{{ section.id }}/?page={{ next_page }}">
+                            Следующая страница <i class="fa fa-chevron-circle-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .section_page__bread_crumbs {
+            font-size: .9rem;
+            margin-left: .5rem;
+            margin-right: .5rem;
+            padding: 1rem 0;
+        }
+        .section_page__bread_crumbs a {
+            color: #000080;
+        }
+
+        .section_page__subsections,
+        .section_page__threads {
+            font-size: 1rem;
+            margin-top: .5rem;
+            margin-left: .5rem;
+            margin-right: .5rem;
+            border: .05rem solid #0B198C;
+        }
+        .section_page__subsections__title,
+        .section_page__threads__title {
+            background: #3774A4;
+            color: #FFFFFF;
+            padding: 1rem;
+        }
+        .section_page__subsections__list__item {
+            padding: .5rem;
+            display: flex;
+        }
+        .section_page__subsections__list__item__title {
+            flex: 80%;
+        }
+        .section_page__subsections__list__item__title a {
+            color: #000080;
+            text-decoration: underline;
+            display: inline-block;
+            margin-top: -0.4rem;
+        }
+        .section_page__subsections__list__item__title img {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .section_page__subsections__list__item__threads_count {
+            flex: 10%;
+        }
+        .section_page__subsections__list__item__answers_count {
+            flex: 10%;
+        }
+
+        .section_page__threads__header {
+            font-weight: bold;
+            display: flex;
+            border-bottom: .05rem solid gray;
+        }
+        .section_page__threads__header__title {
+            padding: 1rem .5rem .5rem;
+            flex: 85%;
+            border-right: .05rem solid gray;
+        }
+        .section_page__threads__header__last_answer {
+            padding: .5rem;
+            flex: 10%;
+            border-right: .05rem solid gray;
+            text-align: center;
+        }
+        .section_page__threads__header__answers_count {
+            padding: 1rem .5rem .5rem;
+            flex: 5%;
+            text-align: center;
+        }
+
+        .section_page__threads__list__item {
+            display: flex;
+            background: #F6F6F6;
+            border-bottom: .05rem solid gray;
+        }
+        .section_page__threads__list__item__title {
+            padding: .5rem;
+            flex: 85%;
+            text-overflow: ellipsis;
+            border-right: .05rem solid gray;
+        }
+        .section_page__threads__list__item__title a {
+            color: #000080;
+            text-decoration: none;
+        }
+        .section_page__threads__list__item__title a:hover,
+        .section_page__threads__list__item__title a:focus {
+            text-decoration: underline;
+        }
+        .section_page__threads__list__item__title__user {
+            margin: .5rem 0;
+            font-size: .8rem;
+            color: #272c54;
+        }
+        .section_page__threads__list__item__last_answer {
+            padding: .5rem;
+            flex: 10%;
+            border-right: .05rem solid gray;
+            text-align: center;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+        }
+        .section_page__threads__list__item__answers_count {
+            padding: .5rem;
+            flex: 5%;
+            text-align: center;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section_page__paginator {
+            display: flex;
+            margin-left: .5rem;
+            margin-right: .5rem;
+            padding: 1rem 0;
+            font-size: 1rem;
+        }
+        .section_page__paginator a {
+            color: black;
+            text-decoration: none;
+        }
+        .section_page__paginator a:hover,
+        .section_page__paginator a:focus {
+            font-weight: bold;
+        }
+        .section_page__paginator__prev_page {
+            text-align: left;
+            flex: 33.3%;
+        }
+        .section_page__paginator__curr_page {
+            text-align: center;
+            flex: 33.3%;
+        }
+        .section_page__paginator__next_page {
+            text-align: right;
+            flex: 33.3%;
+        }
+    </style>
 {% endblock %}

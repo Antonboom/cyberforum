@@ -17,6 +17,7 @@ class Thread(BaseModel):
         'created_at',
         'is_important',
         'rating',
+        'last_answer_time',
     )
 
 

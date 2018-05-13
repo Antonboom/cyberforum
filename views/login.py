@@ -5,7 +5,7 @@ from app import app
 from models import User
 
 
-@app.route('/login', methods=('GET', 'POST',))
+@app.route('/login/', methods=('GET', 'POST',))
 def login_view():
     if request.method == 'POST':
         username = request.form['username']

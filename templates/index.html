@@ -10,18 +10,19 @@
 
                 {% for _, section in forum['sections'].items() %}
                     <div class="forums__forum__section">
-                        <a href="/" class="forums__forum__section__title">
+                        <a href="/section/{{ section['id'] }}/" class="forums__forum__section__title">
                             <h3>{{ section['title'] }}</h3>
                         </a>
                         <div class="forums__forum__section__info">
-                            Тем: {{ section['threads_count'] }}
+                            Тем: {{ '{:,}'.format(section['threads_count']) }} \
+                            Ответов: {{ '{:,}'.format(section['answers_count']) }}
                         </div>
 
                         <div class="forums__forum__section__subsections">
                             {% for subsection in section['subsections'] %}
                                 <div class="forums__forum__section__subsections__subsection">
                                     <img src="//cyberstatic.net/images/statusicon/subforum_new.gif">
-                                    <a href="/">{{ subsection['title'] }}</a>
+                                    <a href="/section/{{ subsection['id'] }}/">{{ subsection['title'] }}</a>
                                 </div>
                             {% endfor %}
                         </div>
@@ -50,13 +51,14 @@
             display: inline-block;
         }
         .forums__forum__title {
+            border-top: .05rem solid #0B198C;
             background: #3774A4;
             color: #FFFFFF;
             font-weight: bold;
-            padding: 0.5rem;
+            padding: .5rem;
         }
         .forums__forum__section {
-            padding: 0.5rem 1rem 1rem;
+            padding: .5rem 1rem 1rem;
             border-bottom: .05rem gray solid;
         }
         .forums__forum__section__title {

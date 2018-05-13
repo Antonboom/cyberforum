@@ -102,23 +102,7 @@ class BaseModel:
         return cls.get(pk=inserted_id)
 
     @classmethod
-    def bulk_create(cls, objs):
-        connector = get_connector()
-        cursor = connector.cursor()
-
-        fields = kwargs.keys()
-        values = [
-            f'%({field})s'
-            for field in fields
-        ]
-        query = f"""
-            INSERT INTO {cls.table_name}
-            ({', '.join(fields)})
-            VALUES({', '.join(values)});
-        """
-
-    @classmethod
-    def filter(cls, **kwargs):
+    def filter(cls, limit=None, **kwargs):
         connector = get_connector()
         cursor = connector.cursor()
 
@@ -129,8 +113,10 @@ class BaseModel:
         ]
         query = f"""
             SELECT * FROM {cls.table_name}
-            WHERE {' AND '.join(conditions)};
+            WHERE {' AND '.join(conditions)}
+            {f'LIMIT {limit}' if limit else ''};
         """
+
         cursor.execute(query, kwargs)
         results = cls._make_list_from_cursor(cursor)
         cursor.close()
