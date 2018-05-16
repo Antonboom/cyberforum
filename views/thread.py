@@ -1,8 +1,10 @@
-from flask import render_template, request
+from flask import render_template
 
 from app import app
 from db import get_connector
-from models import ThreadLabel, Thread, User, Answer
+from models import (
+    ThreadLabel, Thread, User, Answer, Forum, Section,
+)
 
 
 __all__ = ('thread_view',)
@@ -14,6 +16,10 @@ THREADS_PER_PAGE = 20
 @app.route('/thread/<thread_id>/', methods=('GET',))
 def thread_view(thread_id):
     thread = Thread.get(thread_id)
+
+    forum = Forum.get(thread.forum)
+    section = Section.get(thread.section)
+    parent_section = Section.get(section.parent)
     author = User.get(thread.author)
 
     answers_query = """
@@ -87,6 +93,10 @@ def thread_view(thread_id):
 
     return render_template(
         'thread.html',
+        forum=forum,
+        parent_section=parent_section,
+        section=section,
+
         author=author,
         thread=thread,
         labels=labels,

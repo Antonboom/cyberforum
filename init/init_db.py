@@ -22,7 +22,7 @@ MAX_LABELS_FOR_ONE_THREAD = 5
 ANSWERS_COUNT = 5_000_000
 
 SET_LAST_ANSWERS_TIME = False
-SET_USER_MSG_COUNT = True
+SET_USER_MSG_COUNT = False
 
 
 fake = faker.Faker()
@@ -87,7 +87,6 @@ print('Create threads...')
 current_threads_count = Thread.count()
 if current_threads_count < THREADS_COUNT:
     forums = Forum.all()
-    sections = Section.all()
     users = User.all()
 
     for i in range(THREADS_COUNT - current_threads_count):
@@ -96,7 +95,9 @@ if current_threads_count < THREADS_COUNT:
 
         user = random.choice(users)
         forum = random.choice(forums)
-        section = random.choice(sections)
+        section = random.choice(
+            Section.filter(forum=forum.id)
+        )
 
         ThreadFactory.create(
             author_id=user.id,

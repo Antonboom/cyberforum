@@ -2,6 +2,15 @@
 
 {% block content %}
     <div class="thread_page">
+        <div class="thread_page__bread_crumbs">
+            <a href="/">Компьютерный форум</a> >
+            {{ forum.title }} >
+            {% if parent_section %}
+                <a href="/section/{{ parent_section.id }}">{{ parent_section.title }}</a> >
+            {% endif %}
+            <a href="/section/{{ section.id }}">{{ section.title }}</a>
+        </div>
+
         <div class="thread_page__thread">
             <div class="thread_page__thread__title">
                 <b>Тема</b><br/>
@@ -63,10 +72,12 @@
                         <div class="thread_page__thread__area__description__rating">
                             {{ answer.rating or 0 }}
                         </div>
-                        <div class="thread_page__thread__area__description__signature">
-                            <hr size="1" style="color: #AAAAAA; margin: 1rem 0 .5rem 0; width: 30%">
-                            <i class="fa fa-pencil-alt"></i>&nbsp;{{ answer.author.msg_signature }}
-                        </div>
+                        {% if answer.author.msg_signature %}
+                            <div class="thread_page__thread__area__description__signature">
+                                <hr size="1" style="color: #AAAAAA; margin: 1rem 0 .5rem 0; width: 30%">
+                                <i class="fa fa-pencil-alt"></i>&nbsp;{{ answer.author.msg_signature }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
@@ -93,7 +104,6 @@
 
                             <input type="hidden" name="next" value="/thread/{{ thread.id }}">
                             <input type="hidden" name="thread" value="{{ thread.id }}">
-                            <input type="hidden" name="author" value="{{ author.id }}">
                         </div>
                         <div class="cyberforum_form__area__controls">
                             <button type="submit" class="cyberforum_btn">Добавить ответ</button>
@@ -112,6 +122,16 @@
     </div>
 
     <style>
+        .thread_page__bread_crumbs {
+            font-size: .9rem;
+            margin-left: .5rem;
+            margin-right: .5rem;
+            padding: 1rem 0;
+        }
+        .thread_page__bread_crumbs a {
+            color: #000080;
+        }
+
         .thread_page__thread,
         .thread_page__answers__answer {
             margin-top: 1rem;
