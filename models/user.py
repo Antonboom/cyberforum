@@ -45,8 +45,8 @@ class User(BaseModel):
         return super(cls, User).create(**kwargs)
 
     @classmethod
-    def authenticate(cls, username, password):
-        user = cls.get(pk_field='username', pk=username)
+    def authenticate(cls, email, password):
+        user = cls.get(pk_field='email', pk=email)
         if not user:
             return None
 
@@ -67,3 +67,7 @@ class User(BaseModel):
 
     def is_authenticated(self):
         return True
+
+    @property
+    def registered_at_pretty(self):
+        return self.registered_at.strftime('%d.%m.%Y')

@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="thread_page">
+        <div class="thread_page__thread">
+            <div class="thread_page__thread__title">
+                <b>Тема</b><br/>
+                «{{ thread.title }}»
+            </div>
+            <div class="thread_page__thread__area">
+                <div class="thread_page__thread__area__author">
+                    {{ author.username }}
+
+                    <div class="thread_page__thread__area__author__info">
+                        Регистрация: {{ author.registered_at_pretty }}<br>
+                        Сообщений: {{ author.msg_count }}
+                    </div>
+                </div>
+                <div class="thread_page__thread__area__description">
+                    <div class="thread_page__thread__area__description__info">
+                        Создана: {{ thread.created_at_pretty }}<br>
+                        Ответов: {{ thread.answers_count }}<br>
+                        Метки:
+                        {% for label in labels %}
+                            <span class="thread_page__thread__area__description__info__label">
+                                {{ label.text }}
+                            </span>
+                        {% endfor %}
+                        <hr size="1" style="color: #AAAAAA; margin: .5rem 0 1rem 0">
+                    </div>
+                    <div class="thread_page__thread__area__description__text">
+                        {{ thread.text }}
+                    </div>
+                    <div class="thread_page__thread__area__description__rating">
+                        {{ thread.rating or 0 }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="thread_page__answers">
+            {% for answer in answers %}
+                <div class="thread_page__answers__answer">
+                    <div class="thread_page__answers__answer__author">
+                        {{ answer.author.username }}
+
+                        <div class="thread_page__answers__answer__author__info">
+                            Регистрация: {{ answer.author.registered_at_pretty }}<br>
+                            Сообщений: {{ answer.author.msg_count }}
+                        </div>
+                    </div>
+                    <div class="thread_page__answers__answer__description">
+                        <div class="thread_page__answers__answer__description__info">
+                            {{ answer.created_at_pretty }}
+                            <div class="thread_page__answers__answer__description__info__answer_id">
+                                Ответ #{{ loop.index }}
+                            </div>
+                            <hr size="1" style="color: #AAAAAA; margin: .5rem 0 1rem 0">
+                        </div>
+                        <div class="thread_page__thread__area__description__text">
+                            {{ answer.text }}
+                        </div>
+                        <div class="thread_page__thread__area__description__rating">
+                            {{ answer.rating or 0 }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="thread_page__answer_form">
+            {% if current_user.is_authenticated %}
+                HELLO
+            {% else %}
+                <div class="thread_page__answer_form__controls">
+                    <a href="/login/?next=/thread/{{ thread.id }}"
+                       class="cyberforum_btn">
+                        Добавить ответ
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <style>
+        .thread_page__thread,
+        .thread_page__answers__answer {
+            margin-top: 1rem;
+            margin-right: .5rem;
+            margin-left: .5rem;
+            border: .05rem solid #0B198C;
+        }
+        .thread_page__thread__title {
+            font-size: 1rem;
+            background: #3774A4;
+            color: #FFFFFF;
+            padding: 1rem;
+        }
+        .thread_page__thread__area,
+        .thread_page__answers__answer {
+            display: flex;
+        }
+        .thread_page__thread__area__author,
+        .thread_page__answers__answer__author {
+            flex: 15%;
+            background: #E6E6E6;
+            border-right: .05rem solid #AAAAAA;
+            padding: .5rem;
+            font-size: 1rem;
+        }
+        .thread_page__thread__area__author__info,
+        .thread_page__answers__answer__author__info {
+            margin-top: .5rem;
+            font-size: .8rem;
+        }
+        .thread_page__thread__area__description__info__label {
+            border-radius: 1rem;
+            background: rgb(211, 78, 182);
+            padding: 0.1rem 0.5rem;
+            color: white;
+        }
+        .thread_page__thread__area__description,
+        .thread_page__answers__answer__description {
+            flex: 85%;
+            padding: .5rem;
+            font-size: .9rem;
+        }
+        .thread_page__thread__area__description__info,
+        .thread_page__answers__answer__description__info {
+            color: gray;
+            font-size: .8rem;
+        }
+        .thread_page__thread__area__description__rating {
+            text-align: left;
+            color: #808080;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .thread_page__answers__answer__description__info__answer_id {
+            float: right;
+            font-weight: bold;
+        }
+
+        .thread_page__answer_form__controls {
+            display: flex;
+            margin: 1rem .5rem;
+        }
+    </style>
+{% endblock %}

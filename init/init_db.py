@@ -21,6 +21,9 @@ MAX_LABELS_FOR_ONE_THREAD = 5
 
 ANSWERS_COUNT = 5_000_000
 
+SET_LAST_ANSWERS_TIME = False
+SET_USER_MSG_COUNT = True
+
 
 fake = faker.Faker()
 
@@ -125,11 +128,11 @@ if not ThreadLabel.count():
 # Create answers
 print('Create answers...')
 current_answers_count = Answer.count()
-if current_users_count < ANSWERS_COUNT:
+if current_answers_count < ANSWERS_COUNT:
     threads = Thread.all()
     users = User.all()
 
-    for i in range(ANSWERS_COUNT - current_users_count):
+    for i in range(ANSWERS_COUNT - current_answers_count):
         thread = None
         user = None
 
@@ -160,6 +163,23 @@ if current_users_count < ANSWERS_COUNT:
             print(f' - Created {i} answers')
 
 # Set last answer time for threads
-# ...
+if SET_LAST_ANSWERS_TIME:
+    print('Set last answers times for threads')
+
+    for i, thread in enumerate(Thread.all()):
+        thread.set_last_answer_time()
+
+        if i and (i % 20000 == 0):
+            print(f' - Processed {i} threads')
+
+if SET_USER_MSG_COUNT:
+    print('Set user messages count')
+
+    for i, user in enumerate(User.all()):
+        user.msg_count = len(Answer.filter(author=user.id))
+        user.save()
+
+        if i and (i % 20000 == 0):
+            print(f' - Processed {i} users')
 
 print('Complete')

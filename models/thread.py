@@ -1,3 +1,6 @@
+from werkzeug.utils import cached_property
+
+from db import get_connector
 from models.base import BaseModel
 
 
@@ -19,6 +22,45 @@ class Thread(BaseModel):
         'rating',
         'last_answer_time',
     )
+
+    @cached_property
+    def answers_count(self):
+        cursor = get_connector().cursor()
+
+        query = """
+            SELECT COUNT(*)
+            FROM answer
+            INNER JOIN thread ON thread.id = answer.thread
+            WHERE thread.id = %(thread_id)s
+        """
+        cursor.execute(query, {'thread_id': self.id})
+        count = next(cursor)[0]
+        cursor.close()
+
+        return count
+
+    def set_last_answer_time(self):
+        cursor = get_connector().cursor()
+
+        query = """
+            SELECT created_at
+            FROM answer
+            WHERE thread = %(thread_id)s
+            ORDER BY created_at DESC
+            LIMIT 1
+        """
+        cursor.execute(query, {'thread_id': self.id})
+
+        try:
+            self.last_answer_time = next(cursor)[0]
+            self.save()
+
+        except StopIteration:
+            pass
+
+    @property
+    def created_at_pretty(self):
+        return self.created_at.strftime('%d.%m.%Y, %H:%M:%S')
 
 
 class ThreadLabel(BaseModel):

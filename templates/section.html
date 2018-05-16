@@ -62,10 +62,10 @@
                             </div>
                         </div>
                         <div class="section_page__threads__list__item__last_answer">
-                            {{ thread['last_answer_time'] }}
+                            {{ thread['last_answer_time'] or '-' }}
                         </div>
                         <div class="section_page__threads__list__item__answers_count">
-                            {{ thread['answers_count'] }}
+                            {{ thread['answers_count'] or 0 }}
                         </div>
                     </div>
                 {% endfor %}

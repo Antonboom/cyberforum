@@ -16,3 +16,7 @@ class Answer(BaseModel):
         'rating',
         'is_off_topic',
     )
+
+    @property
+    def created_at_pretty(self):
+        return self.created_at.strftime('%d.%m.%Y, %H:%M:%S')

@@ -13,6 +13,11 @@ class BaseModel:
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id}>'
 
+    def __init__(self, **kwargs):
+        for field, value in kwargs.items():
+            if field in self.fields:
+                setattr(self, field, value)
+
     @classmethod
     def _make_list_from_cursor(cls, cursor):
         results = []
@@ -25,6 +30,29 @@ class BaseModel:
             results.append(instance)
         return results
 
+    def save(self):
+        connector = get_connector()
+        cursor = connector.cursor()
+
+        fields = []
+        fields_values = {}
+        for field in self.fields:
+            if hasattr(self, field):
+                fields.append(f'{field} = %({field})s')
+                fields_values[field] = getattr(self, field)
+
+        query = f"""
+            UPDATE {self.table_name}
+            SET {', '.join(fields)}
+            WHERE {self.pk} = {getattr(self, self.pk)}
+        """
+        cursor.execute(query, fields_values)
+
+        connector.commit()
+        cursor.close()
+
+        return self
+
     @classmethod
     def count(cls):
         cursor = get_connector().cursor()
@@ -33,10 +61,23 @@ class BaseModel:
         """
 
         cursor.execute(query)
-        count = next(cursor)[0]
+        cnt = next(cursor)[0]
         cursor.close()
 
-        return count
+        return cnt
+
+    @classmethod
+    def first(cls):
+        cursor = get_connector().cursor()
+        query = f"""
+            SELECT * FROM {cls.table_name} LIMIT 1;
+        """
+
+        cursor.execute(query)
+        result = cls._make_list_from_cursor(cursor)[0]
+        cursor.close()
+
+        return result
 
     @classmethod
     def all(cls):
@@ -102,7 +143,7 @@ class BaseModel:
         return cls.get(pk=inserted_id)
 
     @classmethod
-    def filter(cls, limit=None, **kwargs):
+    def filter(cls, limit=None, order_by=None, asc=True, **kwargs):
         connector = get_connector()
         cursor = connector.cursor()
 
@@ -111,9 +152,11 @@ class BaseModel:
             f'{field} = %({field})s'
             for field in fields
         ]
+        order = 'ASC' if asc else 'DESC'
         query = f"""
             SELECT * FROM {cls.table_name}
             WHERE {' AND '.join(conditions)}
+            {f'ORDER BY {order_by} {order}' if order_by else ''}
             {f'LIMIT {limit}' if limit else ''};
         """
 

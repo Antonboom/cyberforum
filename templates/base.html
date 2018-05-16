@@ -13,10 +13,21 @@
         <div class="title">
             <a href="/"><h3>Компьютерный форум</h3></a>
         </div>
-        <div class="profile">
-            <a href="/login">Войти</a><br/>
-            <a href="/registration">Регистрация</a>
-        </div>
+        {% block profile %}
+            <div class="profile">
+                {% if current_user.is_authenticated %}
+                    <span>
+                        <i class="fa fa-user"></i>&nbsp;<a href="#">{{ current_user.username }}</a>
+                    </span>
+                    <span style="margin-top: .1rem; font-size: .9rem;">
+                        <i class="fa fa-sign-out-alt"></i>&nbsp;<a href="/logout/">Выйти</a>
+                    </span>
+                {% else %}
+                    <span><i class="fa fa-sign-in-alt"></i> <a href="/login">Войти</a></span>
+                    <span><i class="fa fa-user"></i> <a href="/registration">Регистрация</a></span>
+                {% endif %}
+            </div>
+        {% endblock %}
     </header>
     {% block content %}
     {% endblock %}
@@ -48,6 +59,7 @@
             min-height: 3rem;
             margin-left: .5rem;
             margin-right: .5rem;
+            display: flex;
         }
         header a {
             color: black;
@@ -58,11 +70,17 @@
             text-decoration: underline;
         }
         header .profile {
-            float: right;
+            flex: 10%;
+            flex-direction: column;
+            justify-content: center;
+            display: flex;
+            text-align: right;
         }
         header .title {
-            float: left;
-            margin-top: 0.7rem;
+            flex: 90%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
         }
         header .title h3 {
             margin: 0;
@@ -70,6 +88,23 @@
 
         footer {
             text-align: right;
+            margin-right: .5rem;
+        }
+
+        /* Base styles */
+        .cyberforum_btn {
+            font-size: 1rem;
+            padding: .8rem 1rem;
+            background: #3774A4;
+            color: white;
+            text-decoration: none;
+            margin: 0 auto;
+            border: 0;
+        }
+        .cyberforum_btn:hover,
+        .cyberforum_btn:focus {
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </body>

@@ -53,7 +53,7 @@ def section_view(section_id):
         FROM thread
         INNER JOIN user ON thread.author = user.id
         WHERE section = %(section_id)s
-        ORDER BY thread.last_answer_time
+        ORDER BY thread.last_answer_time DESC
         LIMIT %(limit)s
         OFFSET %(offset)s;
     """
@@ -69,7 +69,11 @@ def section_view(section_id):
             'id': thread_id,
             'title': thread_title,
             'created_at': thread_created_at.strftime('%d %b %Y'),
-            'last_answer_time': thread_last_answer_time,
+            'created_at_h': thread_created_at.strftime('%d %b %Y\n%H:%M:%S'),
+            'last_answer_time': (
+                thread_last_answer_time.strftime('%d %b %Y\n%H:%M:%S')
+                if thread_last_answer_time else None
+            ),
             'user_id': user_id,
             'username': username,
         }
