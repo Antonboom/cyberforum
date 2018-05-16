@@ -27,6 +27,7 @@ def thread_view(thread_id):
             user.id user_id,
             user.username username,
             user.msg_count user_msg_count,
+            user.msg_signature user_signature,
             user.registered_at user_registered_at
         FROM answer
         INNER JOIN user ON answer.author = user.id
@@ -47,6 +48,7 @@ def thread_view(thread_id):
                 id=user_id,
                 username=username,
                 msg_count=user_msg_count,
+                msg_signature=user_signature,
                 registered_at=user_registered_at,
             )
         )
@@ -60,6 +62,7 @@ def thread_view(thread_id):
             user_id,
             username,
             user_msg_count,
+            user_signature,
             user_registered_at,
         ) in cursor
     ]

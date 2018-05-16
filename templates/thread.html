@@ -9,7 +9,7 @@
             </div>
             <div class="thread_page__thread__area">
                 <div class="thread_page__thread__area__author">
-                    {{ author.username }}
+                    <b>{{ author.username }}</b>
 
                     <div class="thread_page__thread__area__author__info">
                         Регистрация: {{ author.registered_at_pretty }}<br>
@@ -42,7 +42,7 @@
             {% for answer in answers %}
                 <div class="thread_page__answers__answer">
                     <div class="thread_page__answers__answer__author">
-                        {{ answer.author.username }}
+                        <b>{{ answer.author.username }}</b>
 
                         <div class="thread_page__answers__answer__author__info">
                             Регистрация: {{ answer.author.registered_at_pretty }}<br>
@@ -63,6 +63,10 @@
                         <div class="thread_page__thread__area__description__rating">
                             {{ answer.rating or 0 }}
                         </div>
+                        <div class="thread_page__thread__area__description__signature">
+                            <hr size="1" style="color: #AAAAAA; margin: 1rem 0 .5rem 0; width: 30%">
+                            <i class="fa fa-pencil-alt"></i>&nbsp;{{ answer.author.msg_signature }}
+                        </div>
                     </div>
                 </div>
             {% endfor %}
@@ -70,7 +74,32 @@
 
         <div class="thread_page__answer_form">
             {% if current_user.is_authenticated %}
-                HELLO
+                <div class="cyberforum_form">
+                    <div class="cyberforum_form__title">
+                        Добавление ответа
+                    </div>
+                    <form action="/answer/" method="POST" class="cyberforum_form__area">
+                        {% if errors %}
+                            <div class="cyberforum_form__area__errors">
+                                {% for error in errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="cyberforum_form__area__data">
+                            <label for="text">Текст ответа</label><br>
+                            <textarea name="text" rows="5" required="required"></textarea><br>
+
+                            <input type="hidden" name="next" value="/thread/{{ thread.id }}">
+                            <input type="hidden" name="thread" value="{{ thread.id }}">
+                            <input type="hidden" name="author" value="{{ author.id }}">
+                        </div>
+                        <div class="cyberforum_form__area__controls">
+                            <button type="submit" class="cyberforum_btn">Добавить ответ</button>
+                        </div>
+                    </form>
+                </div>
             {% else %}
                 <div class="thread_page__answer_form__controls">
                     <a href="/login/?next=/thread/{{ thread.id }}"
@@ -116,8 +145,9 @@
         .thread_page__thread__area__description__info__label {
             border-radius: 1rem;
             background: rgb(211, 78, 182);
-            padding: 0.1rem 0.5rem;
+            padding: .1rem .5rem;
             color: white;
+            margin-right: .2rem;
         }
         .thread_page__thread__area__description,
         .thread_page__answers__answer__description {
@@ -137,15 +167,27 @@
             font-size: 1rem;
             margin-top: 1rem;
         }
-
+        .thread_page__thread__area__description__signature {
+            font-size: .8rem;
+        }
         .thread_page__answers__answer__description__info__answer_id {
             float: right;
             font-weight: bold;
         }
 
+        .thread_page__answer_form {
+            margin: 2rem;
+            display: flex;
+        }
+        .cyberforum_form {
+            width: 50rem;
+        }
+        .cyberforum_form textarea {
+            resize: vertical;
+        }
         .thread_page__answer_form__controls {
             display: flex;
-            margin: 1rem .5rem;
+            margin: 0 auto;
         }
     </style>
 {% endblock %}

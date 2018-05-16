@@ -7,41 +7,6 @@
           href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
           integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
           crossorigin="anonymous">
-</head>
-<body>
-    <header>
-        <div class="title">
-            <a href="/"><h3>Компьютерный форум</h3></a>
-        </div>
-        {% block profile %}
-            <div class="profile">
-                {% if current_user.is_authenticated %}
-                    <span>
-                        <i class="fa fa-user"></i>&nbsp;<a href="#">{{ current_user.username }}</a>
-                    </span>
-                    <span style="margin-top: .1rem; font-size: .9rem;">
-                        <i class="fa fa-sign-out-alt"></i>&nbsp;<a href="/logout/">Выйти</a>
-                    </span>
-                {% else %}
-                    <span><i class="fa fa-sign-in-alt"></i> <a href="/login">Войти</a></span>
-                    <span><i class="fa fa-user"></i> <a href="/registration">Регистрация</a></span>
-                {% endif %}
-            </div>
-        {% endblock %}
-    </header>
-    {% block content %}
-    {% endblock %}
-
-    <footer>
-        <div class="description">
-            <p>
-                Антон Телышев, ИУ6-11М<br/>
-                Курсовая работа по дисциплине «Сетевые базы данных»<br/>
-                МГТУ им. Н.Э. Баумана<br/>
-                Москва, 2018 г.<br/>
-            </p>
-        </div>
-    </footer>
 
     <style>
         body {
@@ -91,7 +56,8 @@
             margin-right: .5rem;
         }
 
-        /* Base styles */
+        /*** Base styles ***/
+        /* Button */
         .cyberforum_btn {
             font-size: 1rem;
             padding: .8rem 1rem;
@@ -106,6 +72,80 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+        /* Form */
+        .cyberforum_form {
+            margin: 0 auto;
+            border: .05rem solid #0B198C;
+            width: 30rem;
+        }
+        .cyberforum_form__title {
+            font-size: 1rem;
+            color: white;
+            background: #3774A4;
+            padding: .5rem;
+        }
+        .cyberforum_form__area {
+            padding: 1rem;
+            font-size: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .cyberforum_form__area__errors {
+            background: lightcoral;
+            padding: 1rem;
+            width: 100%;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .cyberforum_form__area__data {
+            width: 100%;
+        }
+        .cyberforum_form__area__data input,
+        .cyberforum_form__area__data textarea {
+            width: 100%;
+            font-size: .9rem;
+        }
+        .cyberforum_form__area__controls {
+            margin-top: 1rem;
+            display: flex;
+            width: 100%;
+        }
     </style>
+</head>
+<body>
+    <header>
+        <div class="title">
+            <a href="/"><h3>Компьютерный форум</h3></a>
+        </div>
+        {% block profile %}
+            <div class="profile">
+                {% if current_user.is_authenticated %}
+                    <span>
+                        <i class="fa fa-user"></i>&nbsp;<a href="#">{{ current_user.username }}</a>
+                    </span>
+                    <span style="margin-top: .1rem; font-size: .9rem;">
+                        <i class="fa fa-sign-out-alt"></i>&nbsp;<a href="/logout/">Выйти</a>
+                    </span>
+                {% else %}
+                    <span><i class="fa fa-sign-in-alt"></i> <a href="/login">Войти</a></span>
+                    <span><i class="fa fa-user"></i> <a href="/registration">Регистрация</a></span>
+                {% endif %}
+            </div>
+        {% endblock %}
+    </header>
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+        <div class="description">
+            <p>
+                Антон Телышев, ИУ6-11М<br/>
+                Курсовая работа по дисциплине «Сетевые базы данных»<br/>
+                МГТУ им. Н.Э. Баумана<br/>
+                Москва, 2018 г.<br/>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
