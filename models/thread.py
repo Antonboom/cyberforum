@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from werkzeug.utils import cached_property
 
 from db import get_connector
@@ -22,6 +24,11 @@ class Thread(BaseModel):
         'rating',
         'last_answer_time',
     )
+
+    @classmethod
+    def create(cls, **kwargs):
+        kwargs['created_at'] = datetime.now()
+        return super().create(**kwargs)
 
     @cached_property
     def answers_count(self):

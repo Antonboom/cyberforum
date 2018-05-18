@@ -3,7 +3,6 @@
 {% block content %}
     <div class="thread_page">
         <div class="thread_page__bread_crumbs">
-            <a href="/">Компьютерный форум</a> >
             {{ forum.title }} >
             {% if parent_section %}
                 <a href="/section/{{ parent_section.id }}">{{ parent_section.title }}</a> >
@@ -58,7 +57,11 @@
                             Сообщений: {{ answer.author.msg_count }}
                         </div>
                     </div>
-                    <div class="thread_page__answers__answer__description">
+                    <div class="thread_page__answers__answer__description
+                                {% if answer.is_off_topic %}
+                                    thread_page__answers__answer__description_off_topic
+                                {% endif %}"
+                    >
                         <div class="thread_page__answers__answer__description__info">
                             {{ answer.created_at_pretty }}
                             <div class="thread_page__answers__answer__description__info__answer_id">
@@ -89,6 +92,7 @@
                     <div class="cyberforum_form__title">
                         Добавление ответа
                     </div>
+
                     <form action="/answer/" method="POST" class="cyberforum_form__area">
                         {% if errors %}
                             <div class="cyberforum_form__area__errors">
@@ -100,7 +104,7 @@
 
                         <div class="cyberforum_form__area__data">
                             <label for="text">Текст ответа</label><br>
-                            <textarea name="text" rows="5" required="required"></textarea><br>
+                            <textarea name="text" rows="5" maxlength="65535" required="required"></textarea><br>
 
                             <input type="hidden" name="next" value="/thread/{{ thread.id }}">
                             <input type="hidden" name="thread" value="{{ thread.id }}">
@@ -175,6 +179,10 @@
             padding: .5rem;
             font-size: .9rem;
         }
+        .thread_page__answers__answer__description_off_topic {
+            background: rgb(236, 236, 236);
+            color: gray;
+        }
         .thread_page__thread__area__description__info,
         .thread_page__answers__answer__description__info {
             color: gray;
@@ -196,13 +204,13 @@
         }
 
         .thread_page__answer_form {
-            margin: 2rem;
+            margin: 2rem .5rem;
             display: flex;
         }
-        .cyberforum_form {
+        .thread_page__answer_form .cyberforum_form {
             width: 50rem;
         }
-        .cyberforum_form textarea {
+        .thread_page__answer_form .cyberforum_form textarea {
             resize: vertical;
         }
         .thread_page__answer_form__controls {

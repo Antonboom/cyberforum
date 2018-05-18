@@ -1,5 +1,6 @@
 from flask import Flask
 from flask.ext.login import LoginManager
+from flask.ext.cache import Cache
 
 import settings
 
@@ -8,6 +9,9 @@ __all__ = ('app',)
 
 app = Flask(__name__)
 app.secret_key = settings.SECRET_KEY
+
+app.config['CACHE_TYPE'] = 'simple'
+app.cache = Cache(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

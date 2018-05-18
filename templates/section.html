@@ -3,7 +3,6 @@
 {% block content %}
     <div class="section_page">
         <div class="section_page__bread_crumbs">
-            <a href="/">Компьютерный форум</a> >
             {{ forum.title }} >
             {% if parent_section %}
                 <a href="/section/{{ parent_section.id }}">{{ parent_section.title }}</a> >
@@ -70,6 +69,50 @@
                     </div>
                 {% endfor %}
             </div>
+        </div>
+
+        <div class="section_page__thread_form">
+            {% if current_user.is_authenticated %}
+                <div class="cyberforum_form">
+                    <div class="cyberforum_form__title">
+                        Создание новой темы в разделе<br><b>«{{ section.title }}»</b>
+                    </div>
+                    <form action="/thread/" method="POST" class="cyberforum_form__area">
+                        {% if errors %}
+                            <div class="cyberforum_form__area__errors">
+                                {% for error in errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="cyberforum_form__area__data">
+                            <label for="title">Название темы</label><br>
+                            <input type="text" name="title" maxlength="255" required="required"><br><br>
+
+                            <label for="labels">Метки (через запятую)</label><br>
+                            <input type="text" name="labels" class="js--labels-input"><br><br>
+
+                            <div class="section_page__thread_form__labels_list js--labels-list"></div>
+                            <label for="text">Текст сообщения</label><br>
+                            <textarea name="text" rows="5" maxlength="65535" required="required"></textarea><br>
+
+                            <input type="hidden" name="forum" value="{{ forum.id }}">
+                            <input type="hidden" name="section" value="{{ section.id }}">
+                        </div>
+                        <div class="cyberforum_form__area__controls">
+                            <button type="submit" class="cyberforum_btn">Добавить тему</button>
+                        </div>
+                    </form>
+                </div>
+            {% else %}
+                <div class="section_page__thread_form__controls">
+                    <a href="/login/?next=/section/{{ section.id }}"
+                       class="cyberforum_btn">
+                        Добавить тему
+                    </a>
+                </div>
+            {% endif %}
         </div>
 
         {% if prev_page or next_page %}
@@ -210,6 +253,36 @@
             flex-direction: column;
         }
 
+        .section_page__thread_form {
+            margin: 2rem .5rem;
+            display: flex;
+        }
+        .section_page__thread_form__controls {
+            margin: 0 auto;
+            display: flex;
+        }
+        .section_page__thread_form .cyberforum_form {
+            width: 50rem;
+        }
+        .section_page__thread_form .cyberforum_form textarea {
+            resize: vertical;
+        }
+        .section_page__thread_form__labels_list {
+            border: 0.05rem solid black;
+            max-height: 10rem;
+            overflow-y: scroll;
+            margin-bottom: 1rem;
+            padding: 0 .5rem .5rem;
+            margin-top: -1rem;
+            bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .section_page__thread_form__labels_list__item:hover {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
         .section_page__paginator {
             display: flex;
             margin-left: .5rem;
@@ -238,4 +311,55 @@
             flex: 33.3%;
         }
     </style>
+
+    <script>
+        let typingTimer;
+        const doneTypingInterval = 500;    // 100 ms
+        const $labelsInput = $('.js--labels-input');
+        const $labelsList = $('.js--labels-list');
+
+        $labelsInput.on('keyup', () => {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(showLabels, doneTypingInterval);
+        });
+
+        $labelsInput.on('keydown', () => {
+            clearTimeout(typingTimer);
+        });
+
+        const labelClasses = "section_page__thread_form__labels_list__item js--label";
+        const showLabels = () => {
+            const labels = $labelsInput.val().split(',').filter((label) => label);
+            const query = labels[labels.length - 1].trim();
+
+            if (!query) {
+                $labelsList.html('');
+                $labelsList.hide();
+                return;
+            }
+
+            $.get('/thread_label_search/?query=' + query, (data) => {
+                $labelsList.html(
+                    $.map(data.labels, (label) => {
+                        return `<p class="${labelClasses}">${label}</p>`;
+                    })
+                );
+                if (data.labels.length) {
+                    $labelsList.show();
+                }
+            });
+        };
+
+        $(document).on('click', '.js--label', (event) => {
+            const $label = $(event.target);
+
+            const labels = $labelsInput.val().split(',');
+            labels[labels.length - 1] = $label.text();
+
+            $labelsInput.val(labels.join(', ') + ', ');
+
+            $labelsList.html('');
+            $labelsList.hide();
+        });
+    </script>
 {% endblock %}

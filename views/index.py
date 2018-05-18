@@ -8,6 +8,7 @@ __all__ = ('index_view',)
 
 
 @app.route('/', methods=('GET',))
+@app.cache.cached(timeout=60 * 60)
 def index_view():
     # TODO(a.telishev): More ORM!
     threads_count_query = """

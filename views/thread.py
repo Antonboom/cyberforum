@@ -1,16 +1,61 @@
-from flask import render_template
+from http import HTTPStatus
+
+from flask import abort, render_template, jsonify, request, redirect
+from flask.ext.login import current_user
 
 from app import app
 from db import get_connector
 from models import (
     ThreadLabel, Thread, User, Answer, Forum, Section,
+    ThreadsLabels,
 )
 
 
-__all__ = ('thread_view',)
+__all__ = (
+    'create_thread_view',
+    'thread_view',
+    'thread_label_view',
+    'thread_label_search_view',
+)
 
 
 THREADS_PER_PAGE = 20
+
+
+@app.route('/thread/', methods=('POST',))
+def create_thread_view():
+    forum = request.form['forum']
+    section = request.form['section']
+    title = request.form['title']
+    text = request.form['text']
+
+    new_thread = Thread.create(
+        author=current_user.id,
+        forum=forum,
+        section=section,
+        title=title,
+        text=text,
+    )
+
+    labels = [
+        label.strip()
+        for label in request.form['labels'].split(',')
+        if label.strip()
+    ]
+    if labels:
+        for label in labels:
+            thread_label = ThreadLabel.filter(text=label)
+            if thread_label:
+                thread_label = thread_label[0]
+            else:
+                thread_label = ThreadLabel.create(text=label)
+
+            ThreadsLabels.create(
+                thread=new_thread.id,
+                label=thread_label.id,
+            )
+
+    return redirect(f'/thread/{new_thread.id}')
 
 
 @app.route('/thread/<thread_id>/', methods=('GET',))
@@ -102,3 +147,32 @@ def thread_view(thread_id):
         labels=labels,
         answers=answers,
     )
+
+
+@app.route('/thread_label/<thread_id>/', methods=('GET',))
+def thread_label_view(thread_id):
+    thread = Thread.get(thread_id)
+
+    if not thread:
+        abort(HTTPStatus.BAD_REQUEST)
+
+    labels = ThreadLabel.filter(thread=thread.id)
+
+    return jsonify({
+        'thread': thread_id,
+        'labels': [label.text for label in labels],
+    })
+
+
+@app.route('/thread_label_search/', methods=('GET',))
+def thread_label_search_view():
+    label_query = request.args.get('query')
+    if not label_query:
+        abort(HTTPStatus.BAD_REQUEST)
+
+    labels = ThreadLabel.find(field='text', query=label_query.strip())
+
+    return jsonify({
+        'query': label_query,
+        'labels': [label.text for label in labels],
+    })

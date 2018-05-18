@@ -165,3 +165,19 @@ class BaseModel:
         cursor.close()
 
         return results
+
+    @classmethod
+    def find(cls, field, query):
+        connector = get_connector()
+        cursor = connector.cursor()
+
+        query = f"""
+            SELECT * FROM {cls.table_name}
+            WHERE {field} LIKE '{query}%'
+        """
+
+        cursor.execute(query)
+        results = cls._make_list_from_cursor(cursor)
+        cursor.close()
+
+        return results
