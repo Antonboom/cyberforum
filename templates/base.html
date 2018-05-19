@@ -35,14 +35,14 @@
             text-decoration: underline;
         }
         header .profile {
-            flex: 10%;
+            flex: 15%;
             flex-direction: column;
             justify-content: center;
             display: flex;
             text-align: right;
         }
         header .title {
-            flex: 90%;
+            flex: 85%;
             display: flex;
             justify-content: center;
             flex-direction: column;
@@ -106,6 +106,9 @@
             width: 100%;
             font-size: .9rem;
         }
+        .cyberforum_form__area__data textarea {
+            resize: vertical;
+        }
         .cyberforum_form__area__controls {
             margin-top: 1rem;
             display: flex;
@@ -126,6 +129,11 @@
                     <span>
                         <i class="fa fa-user"></i>
                         <a href="/profile/{{ current_user.id }}/">{{ current_user.username }}</a>
+                    </span>
+                    <span style="margin-top: .1rem; font-size: .9rem;">
+                        {% if current_user.is_admin %}
+                            &nbsp;<a href="/admin/"><i class="fa fa-wrench"></i> Административный интерфейс</a>
+                        {% endif %}
                     </span>
                     <span style="margin-top: .1rem; font-size: .9rem;">
                         <i class="fa fa-sign-out-alt"></i>&nbsp;<a href="/logout/">Выйти</a>

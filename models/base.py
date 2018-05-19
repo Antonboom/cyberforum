@@ -137,7 +137,11 @@ class BaseModel:
         connector = get_connector()
         cursor = connector.cursor()
 
-        fields = kwargs.keys()
+        fields = [
+            field
+            for field, value in kwargs.items()
+            if field in cls.fields and value
+        ]
         values = [
             f'%({field})s'
             for field in fields

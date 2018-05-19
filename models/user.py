@@ -42,6 +42,7 @@ class User(BaseModel):
         kwargs.update({
             'password_hash': password_hash,
             'password_salt': password_salt,
+            'registered_at': datetime.now(),
         })
         return super(cls, User).create(**kwargs)
 

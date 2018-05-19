@@ -1,13 +1,60 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% if errors %}
-        <h4>{{ errors }}</h4>
-    {% endblock %}
+    <div class="registration_page">
+        <div class="cyberforum_form">
+            <div class="cyberforum_form__title">
+                Регистрация
+            </div>
+            <form action="/registration/" method="POST" class="cyberforum_form__area">
+                {% if errors %}
+                    <div class="cyberforum_form__area__errors">
+                        {% for error in errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
-    <form action="/registration" method="POST">
-        <p><input type=text name=username>
-        <p><input type=password name=password>
-        <p><input type=submit value=Login>
-    </form>
+                <div class="cyberforum_form__area__data">
+                    <label for="username"><b>Имя пользователя*</b></label><br>
+                    <input type="text" name="username"
+                           required="required" value="{{ data.get('username', '') }}"><br><br>
+
+                    <label for="email"><b>E-mail*</b></label><br>
+                    <input type="email" name="email"
+                           required="required" value="{{ data.get('email', '') }}"><br><br>
+
+                    <label for="password"><b>Пароль*</b></label><br>
+                    <input type="password" name="password"
+                           required="required" minlength="6" value="{{ data.get('password', '') }}"><br><br>
+
+                    <label for="password_repeat"><b>Повтор пароля*</b></label><br>
+                    <input type="password" name="password_repeat" minlength="6" required="required"><br><br>
+
+                    <label for="real_name">Настоящее имя</label><br>
+                    <input type="text" name="real_name" value="{{ data.get('real_name', '') }}"><br><br>
+
+                    <label for="location">Местоположение</label><br>
+                    <input type="text" name="location" value="{{ data.get('location', '') }}"><br><br>
+
+                    <label for="birthday">День рождения</label><br>
+                    <input type="text" name="birthday" value="{{ data.get('birthday', '') }}"><br><br>
+
+                    <label for="msg_signature">Подпись к сообщениям</label><br>
+                    <textarea type="text" name="msg_signature">{{ data.get('msg_signature', '') }}</textarea><br><br>
+
+                    * - обязательные поля
+                </div>
+                <div class="cyberforum_form__area__controls">
+                    <button type="submit" class="cyberforum_btn">Зарегистрироваться</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .registration_page {
+            margin: 1rem .5rem;
+        }
+    </style>
 {% endblock %}
