@@ -1,3 +1,5 @@
+from mysql.connector import IntegrityError
+
 from db import get_connector
 
 
@@ -8,7 +10,9 @@ class BaseModel:
 
     table_name = ''
     pk = 'id'
+
     fields = []
+    sort_fields = []
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id}>'
@@ -44,7 +48,7 @@ class BaseModel:
         query = f"""
             UPDATE {self.table_name}
             SET {', '.join(fields)}
-            WHERE {self.pk} = {getattr(self, self.pk)}
+            WHERE {self.pk} = {getattr(self, self.pk)};
         """
         cursor.execute(query, fields_values)
 
@@ -52,6 +56,16 @@ class BaseModel:
         cursor.close()
 
         return self
+
+    def delete(self):
+        cursor = get_connector().cursor()
+        query = f"""
+            DELETE FROM {self.table_name}
+            WHERE {self.pk} = {getattr(self, self.pk)};
+        """
+
+        cursor.execute(query)
+        cursor.close()
 
     @classmethod
     def count(cls):
@@ -80,10 +94,11 @@ class BaseModel:
         return result
 
     @classmethod
-    def all(cls):
+    def all(cls, limit=None):
         cursor = get_connector().cursor()
         query = f"""
-            SELECT * FROM {cls.table_name};
+            SELECT * FROM {cls.table_name}
+            {f'LIMIT {limit}' if limit else ''};
         """
 
         cursor.execute(query)
@@ -133,7 +148,10 @@ class BaseModel:
             VALUES({', '.join(values)});
         """
 
-        cursor.execute(query, kwargs)
+        try:
+            cursor.execute(query, kwargs)
+        except IntegrityError:
+            return
         inserted_id = cursor.lastrowid
 
         connector.commit()
@@ -143,7 +161,9 @@ class BaseModel:
         return cls.get(pk=inserted_id)
 
     @classmethod
-    def filter(cls, limit=None, order_by=None, asc=True, **kwargs):
+    def filter(cls,
+               order_by=None, asc=True, search=None,
+               limit=None, offset=None, **kwargs):
         connector = get_connector()
         cursor = connector.cursor()
 
@@ -152,12 +172,23 @@ class BaseModel:
             f'{field} = %({field})s'
             for field in fields
         ]
+        likes = [
+            f'{field} LIKE "{search}%"'
+            for field in cls.fields
+        ] if search else []
+
+        where = (
+            f"WHERE {' AND '.join(conditions)} {' OR '.join(likes)}"
+            if conditions or likes
+            else ''
+        )
         order = 'ASC' if asc else 'DESC'
         query = f"""
             SELECT * FROM {cls.table_name}
-            WHERE {' AND '.join(conditions)}
+            { where }
             {f'ORDER BY {order_by} {order}' if order_by else ''}
-            {f'LIMIT {limit}' if limit else ''};
+            {f'LIMIT {limit}' if limit else ''}
+            {f'OFFSET {offset}' if offset else ''};
         """
 
         cursor.execute(query, kwargs)

@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from flask import abort, render_template, jsonify, request, redirect
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from app import app
 from db import get_connector

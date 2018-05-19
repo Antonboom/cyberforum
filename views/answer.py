@@ -2,7 +2,7 @@ from datetime import datetime
 from http import HTTPStatus
 
 from flask import request, redirect, abort
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from app import app
 from models import Answer, Thread

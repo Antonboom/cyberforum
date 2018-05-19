@@ -1,5 +1,5 @@
-from flask import request, redirect, abort, render_template
-from flask.ext.login import login_user, logout_user
+from flask import request, redirect, render_template
+from flask_login import login_user, logout_user
 
 from app import app
 from models import User

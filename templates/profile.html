@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="profile_page">
+        <div class="cyberforum_form">
+            <div class="cyberforum_form__title">
+                Пользователь <b>{{ user.username }}</b>
+            </div>
+            <div class="cyberforum_form__data">
+                <h3>О пользователе</h3>
+                <div class="cyberforum_form__field">
+                    <label>ID в системе: </label> {{ user.id }}
+                </div>
+                <div class="cyberforum_form__field">
+                    <label>E-mail: </label> {{ user.email }}
+                </div>
+                <div class="cyberforum_form__field">
+                    <label>Зарегистрирован: </label> {{ user.registered_at.strftime('%H:%M %d.%m.%Y') }}
+                </div>
+                <div class="cyberforum_form__field">
+                    <label>Настоящее имя: </label> {{ user.real_name }}
+                </div>
+                <div class="cyberforum_form__field">
+                    <label>Местоположение: </label> {{ user.location }}
+                </div>
+                <div class="cyberforum_form__field">
+                    <label>День рождения: </label> {{ user.birthday_at_pretty }}
+                </div>
+
+
+                <h3>Статистика</h3>
+                <div class="cyberforum_form__field">
+                    <label>Количество созданных тем: </label> {{ threads_count }}
+                </div>
+                <div class="cyberforum_form__field">
+                    <label>Количество сообщений: </label> {{ user.msg_count }}
+                </div>
+
+                <h3>Служебная информация</h3>
+                <ul>
+                    <li>{% if user.is_staff %}Является{% else %}Не является{% endif %} модератром.</li>
+                    <li>{% if user.is_admin %}Является{% else %}Не является{% endif %} администратором.</li>
+                </ul>
+
+                <h3>Подпись</h3>
+                <p>
+                    {{ user.msg_signature or 'Отсутствует' }}
+                </p>
+            </div>
+
+            <form action="/answer/" method="POST" class="cyberforum_form__area">
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .profile_page {
+            margin: 1rem .5rem;
+        }
+        .profile_page .cyberforum_form {
+            width: 50rem;
+            font-size: .8rem;
+        }
+        .profile_page .cyberforum_form .cyberforum_form__data {
+            padding: 0 1rem;
+        }
+        .profile_page .cyberforum_form .cyberforum_form__field label {
+            color: gray;
+        }
+    </style>
+{% endblock %}

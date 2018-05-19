@@ -124,7 +124,8 @@
             <div class="profile">
                 {% if current_user.is_authenticated %}
                     <span>
-                        <i class="fa fa-user"></i>&nbsp;<a href="#">{{ current_user.username }}</a>
+                        <i class="fa fa-user"></i>
+                        <a href="/profile/{{ current_user.id }}/">{{ current_user.username }}</a>
                     </span>
                     <span style="margin-top: .1rem; font-size: .9rem;">
                         <i class="fa fa-sign-out-alt"></i>&nbsp;<a href="/logout/">Выйти</a>

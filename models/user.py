@@ -36,7 +36,8 @@ class User(BaseModel):
 
     @classmethod
     def create(cls, **kwargs):
-        password = kwargs.pop('password')
+        # FIXME(a.telyshev): Required password
+        password = kwargs.pop('password', kwargs['username'])
         password_salt, password_hash = cls._get_password_data(password)
         kwargs.update({
             'password_hash': password_hash,
@@ -71,3 +72,7 @@ class User(BaseModel):
     @property
     def registered_at_pretty(self):
         return self.registered_at.strftime('%d.%m.%Y')
+
+    @property
+    def birthday_at_pretty(self):
+        return self.birthday.strftime('%d.%m.%Y')

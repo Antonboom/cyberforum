@@ -71,6 +71,30 @@
             </div>
         </div>
 
+        {% if prev_page or next_page %}
+            <div class="section_page__paginator">
+                <div class="section_page__paginator__prev_page">
+                    {% if prev_page %}
+                        <a href="/section/{{ section.id }}/?page={{ prev_page }}">
+                            <i class="fa fa-chevron-circle-left"></i> Предыдущая страница
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="section_page__paginator__curr_page">
+                    Страница {{ curr_page }}
+                </div>
+
+                <div class="section_page__paginator__next_page">
+                    {% if next_page %}
+                        <a href="/section/{{ section.id }}/?page={{ next_page }}">
+                            Следующая страница <i class="fa fa-chevron-circle-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
         <div class="section_page__thread_form">
             {% if current_user.is_authenticated %}
                 <div class="cyberforum_form">
@@ -114,30 +138,6 @@
                 </div>
             {% endif %}
         </div>
-
-        {% if prev_page or next_page %}
-            <div class="section_page__paginator">
-                <div class="section_page__paginator__prev_page">
-                    {% if prev_page %}
-                        <a href="/section/{{ section.id }}/?page={{ prev_page }}">
-                            <i class="fa fa-chevron-circle-left"></i> Предыдущая страница
-                        </a>
-                    {% endif %}
-                </div>
-
-                <div class="section_page__paginator__curr_page">
-                    Страница {{ curr_page }}
-                </div>
-
-                <div class="section_page__paginator__next_page">
-                    {% if next_page %}
-                        <a href="/section/{{ section.id }}/?page={{ next_page }}">
-                            Следующая страница <i class="fa fa-chevron-circle-right"></i>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        {% endif %}
     </div>
 
     <style>
