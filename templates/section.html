@@ -34,6 +34,17 @@
             </div>
         {% endif %}
 
+        <div class="section_page__search">
+            <div class="section_page__search__title">
+                Поиск по темам
+            </div>
+            <div class="section_page__search__form">
+                <input type="text" required="required" class="js--search-query"
+                       placeholder="Название темы" value="{{ search }}">
+                <button type="button" class="cyberforum_btn js--search-btn">Поиск</button>
+            </div>
+        </div>
+
         <div class="section_page__threads">
             <div class="section_page__threads__title">
                 Темы раздела <b>«{{ section.title }}»</b>
@@ -75,7 +86,7 @@
             <div class="section_page__paginator">
                 <div class="section_page__paginator__prev_page">
                     {% if prev_page %}
-                        <a href="/section/{{ section.id }}/?page={{ prev_page }}">
+                        <a href="/section/{{ section.id }}/?page={{ prev_page }}&search={{ search }}">
                             <i class="fa fa-chevron-circle-left"></i> Предыдущая страница
                         </a>
                     {% endif %}
@@ -87,7 +98,7 @@
 
                 <div class="section_page__paginator__next_page">
                     {% if next_page %}
-                        <a href="/section/{{ section.id }}/?page={{ next_page }}">
+                        <a href="/section/{{ section.id }}/?page={{ next_page }}&search={{ search }}">
                             Следующая страница <i class="fa fa-chevron-circle-right"></i>
                         </a>
                     {% endif %}
@@ -152,6 +163,7 @@
         }
 
         .section_page__subsections,
+        .section_page__search,
         .section_page__threads {
             font-size: 1rem;
             margin-top: .5rem;
@@ -160,6 +172,7 @@
             border: .05rem solid #0B198C;
         }
         .section_page__subsections__title,
+        .section_page__search__title,
         .section_page__threads__title {
             background: #3774A4;
             color: #FFFFFF;
@@ -209,6 +222,15 @@
             padding: 1rem .5rem .5rem;
             flex: 5%;
             text-align: center;
+        }
+
+        .section_page__search .section_page__search__form {
+            padding: .5rem;
+        }
+        .section_page__search .section_page__search__form input {
+            vertical-align: sub;
+            font-size: 1.5rem;
+            width: 40rem;
         }
 
         .section_page__threads__list__item {
@@ -313,6 +335,13 @@
     </style>
 
     <script>
+        // Thread search
+        $(document).on('click', '.js--search-btn', (event) => {
+            const query = $('.js--search-query').val();
+            window.location = `/section/{{ section.id }}/?search=${query}`;
+        });
+
+        // Thread labels
         let typingTimer;
         const doneTypingInterval = 500;    // 100 ms
         const $labelsInput = $('.js--labels-input');

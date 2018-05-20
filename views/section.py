@@ -42,7 +42,9 @@ def section_view(section_id):
 
     offset = (page - 1) * THREADS_PER_PAGE
 
-    query = """
+    search = request.args.get('search', '')
+    search_condition = f'AND thread.title LIKE "%{search}%"' if search else ''
+    query = f"""
         SELECT
             thread.id thread_id,
             thread.title thread_title,
@@ -52,13 +54,12 @@ def section_view(section_id):
             user.username username
         FROM thread
         INNER JOIN user ON thread.author = user.id
-        WHERE section = %(section_id)s
+        WHERE section = %(section_id)s {search_condition}
         ORDER BY thread.last_answer_time DESC
         LIMIT %(limit)s
         OFFSET %(offset)s;
     """
     cursor = get_connector().cursor()
-
     cursor.execute(query, {
         'section_id': section.id,
         'limit': THREADS_PER_PAGE,
@@ -87,19 +88,20 @@ def section_view(section_id):
         ) in cursor
     }
 
-    answers_count_query = f"""
-        SELECT
-            thread.id,
-            COUNT(*)
-        FROM thread INNER JOIN answer on thread.id = answer.thread
-        WHERE thread.id IN ({
-            ', '.join(str(thread_id) for thread_id in threads)
-        })
-        GROUP BY thread.id;
-    """
-    cursor.execute(answers_count_query)
-    for thread_id, answers_count in cursor:
-        threads[thread_id]['answers_count'] = answers_count
+    if threads:
+        answers_count_query = f"""
+            SELECT
+                thread.id,
+                COUNT(*)
+            FROM thread INNER JOIN answer on thread.id = answer.thread
+            WHERE thread.id IN ({
+                ', '.join(str(thread_id) for thread_id in threads)
+            })
+            GROUP BY thread.id;
+        """
+        cursor.execute(answers_count_query)
+        for thread_id, answers_count in cursor:
+            threads[thread_id]['answers_count'] = answers_count
 
     cursor.close()
 
@@ -111,6 +113,7 @@ def section_view(section_id):
         subsections=subsections,
 
         threads=threads.values(),
+        search=search,
         next_page=next_page,
         curr_page=page,
         prev_page=prev_page,
