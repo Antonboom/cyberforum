@@ -27,6 +27,13 @@ class User(BaseModel):
         'is_staff',
         'is_admin',
     )
+    search_fields = (
+        'username',
+        'email',
+        'real_name',
+        'location',
+        'msg_signature',
+    )
 
     @classmethod
     def _get_password_data(cls, password):

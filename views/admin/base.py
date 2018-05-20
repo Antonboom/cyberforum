@@ -1,20 +1,16 @@
-from flask.ext.login import current_user
 from flask_admin.model import BaseModelView
+
+from views.admin.mixins import AdminPermissionsMixin
 
 
 __all__ = ('ModelView',)
-
-
-class AdminPermissionsMixin:
-
-    def is_accessible(self):
-        return current_user.is_authenticated and current_user.is_admin
 
 
 class ModelView(AdminPermissionsMixin, BaseModelView):
 
     simple_list_pager = True
     can_set_page_size = True
+    # TODO(a.telishev): is_deleted flag
     can_delete = False
 
     def get_pk_value(self, model):

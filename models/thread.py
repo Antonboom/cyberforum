@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from flask_login import current_user
 from werkzeug.utils import cached_property
 
 from db import get_connector
@@ -24,10 +25,20 @@ class Thread(BaseModel):
         'rating',
         'last_answer_time',
     )
+    search_fields = (
+        'title',
+        'text',
+        'author',
+    )
 
     @classmethod
     def create(cls, **kwargs):
         kwargs['created_at'] = datetime.now()
+
+        # TODO(a.telishev): Remove implicitness
+        if 'author' not in kwargs:
+            kwargs['author'] = current_user.id
+
         return super().create(**kwargs)
 
     @cached_property

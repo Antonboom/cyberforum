@@ -1,0 +1,39 @@
+{% extends 'admin/base.html' %}
+
+{% block body %}
+    <p>Привет, <b>{{ current_user.username }}</b>!</p>
+    <p>Вас приветствует административный интерфейс системы <b>"Компьютерный форум"</b>.</p>
+    <p>
+        Вы можете создавать и редактировать:<br>
+            - Пользователей;<br>
+            - Форумы;<br>
+            - Разделы форумов;<br>
+            - Темы.<br>
+    </p>
+    <p>А также производить полнотекстовый поиск по данным сущностям.</p>
+    <p>
+        <a href="/">Перейти на сайт</a>
+    </p>
+
+{% endblock %}
+
+{% block tail %}
+    <div class="container">
+        <div class="description">
+            <p>
+                Антон Телышев, ИУ6-11М<br/>
+                Курсовая работа по дисциплине «Сетевые базы данных»<br/>
+                МГТУ им. Н.Э. Баумана<br/>
+                Москва, 2018 г.<br/>
+            </p>
+        </div>
+    </div>
+
+    <style>
+        .container .description {
+            text-align: right;
+            margin-right: .5rem;
+            font-size: 1rem;
+        }
+    </style>
+{% endblock %}

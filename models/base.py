@@ -12,7 +12,7 @@ class BaseModel:
     pk = 'id'
 
     fields = []
-    sort_fields = []
+    search_fields = []
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id}>'
@@ -178,7 +178,7 @@ class BaseModel:
         ]
         likes = [
             f'{field} LIKE "{search}%"'
-            for field in cls.fields
+            for field in cls.search_fields
         ] if search else []
 
         where = (
@@ -194,7 +194,6 @@ class BaseModel:
             {f'LIMIT {limit}' if limit else ''}
             {f'OFFSET {offset}' if offset else ''};
         """
-
         cursor.execute(query, kwargs)
         results = cls._make_list_from_cursor(cursor)
         cursor.close()

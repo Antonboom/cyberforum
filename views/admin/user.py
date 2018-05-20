@@ -40,3 +40,4 @@ class UserModelView(ModelView):
         'is_staff',
         'is_admin',
     )
+
