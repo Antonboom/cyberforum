@@ -57,13 +57,23 @@
                             Сообщений: {{ answer.author.msg_count }}
                         </div>
                     </div>
-                    <div class="thread_page__answers__answer__description
+                    <div class="js--answer thread_page__answers__answer__description
                                 {% if answer.is_off_topic %}
                                     thread_page__answers__answer__description_off_topic
                                 {% endif %}"
                     >
                         <div class="thread_page__answers__answer__description__info">
                             {{ answer.created_at_pretty }}
+
+                            {% if not answer.is_off_topic and (current_user.is_staff or current_user.is_admin) %}
+                                <div class="thread_page__answers__answer__description__info__off_topic js--flag-as-off-topic"
+                                     data-answer-id="{{ answer.id }}"
+                                >
+                                    <i class="fa fa-exclamation-triangle" data-answer-id="{{ answer.id }}"></i>
+                                    Пометить как «вне темы»
+                                </div>
+                            {% endif %}
+
                             <div class="thread_page__answers__answer__description__info__answer_id">
                                 Ответ #{{ loop.index }}
                             </div>
@@ -202,6 +212,21 @@
             background: rgb(236, 236, 236);
             color: gray;
         }
+        .thread_page__answers__answer__description__info__off_topic {
+            float: right;
+            color: rgba(152, 0, 0, 0.57);
+            margin-left: 1rem;
+            font-weight: bold;
+        }
+        .thread_page__answers__answer__description__info__off_topic:hover,
+        .thread_page__answers__answer__description__info__off_topic:focus {
+            color: darkred;
+            cursor: pointer;
+        }
+        .thread_page__answers__answer__description__info__answer_id {
+            float: right;
+            font-weight: bold;
+        }
         .thread_page__thread__area__description__info,
         .thread_page__answers__answer__description__info {
             color: gray;
@@ -227,10 +252,6 @@
         .thread_page__thread__area__description__signature {
             font-size: .8rem;
         }
-        .thread_page__answers__answer__description__info__answer_id {
-            float: right;
-            font-weight: bold;
-        }
 
         .thread_page__answer_form {
             margin: 2rem .5rem;
@@ -255,6 +276,18 @@
 
             $.get(`/inc_answer_rating/${$incButton.data('answer-id')}/`, (data) => {
                 $rating.html(data.rating);
+            });
+        });
+
+        $('.js--flag-as-off-topic').on('click', (event) => {
+            const $flagButton = $(event.target);
+            const $answer = $($flagButton.parents('.js--answer')[0]);
+            const $rating = $answer.find('.js--inc-answer-rating');
+
+            $.get(`/flag_answer_as_off_topic/${$flagButton.data('answer-id')}/`, (data) => {
+                $answer.addClass('thread_page__answers__answer__description_off_topic');
+                $flagButton.remove();
+                $rating.remove();
             });
         });
     </script>

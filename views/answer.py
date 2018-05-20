@@ -8,7 +8,11 @@ from app import app
 from models import Answer, Thread
 
 
-__all__ = ('create_answer_view', 'increment_answer_rating_view')
+__all__ = (
+    'create_answer_view',
+    'inc_answer_rating_view',
+    'flag_answer_as_off_topic',
+)
 
 
 @app.route('/answer/', methods=('POST',))
@@ -39,7 +43,7 @@ def create_answer_view():
 
 
 @app.route('/inc_answer_rating/<answer_id>/', methods=('GET',))
-def increment_answer_rating_view(answer_id):
+def inc_answer_rating_view(answer_id):
     answer_id = int(answer_id)
 
     answer = Answer.get(answer_id)
@@ -54,4 +58,22 @@ def increment_answer_rating_view(answer_id):
     return jsonify({
         'answer': answer_id,
         'rating': answer.rating,
+    })
+
+
+@app.route('/flag_answer_as_off_topic/<answer_id>/', methods=('GET',))
+def flag_answer_as_off_topic(answer_id):
+    if not (current_user.is_staff or current_user.is_admin):
+        return abort(HTTPStatus.BAD_REQUEST)
+
+    answer_id = int(answer_id)
+    answer = Answer.get(answer_id)
+    if not answer:
+        return abort(HTTPStatus.NOT_FOUND)
+
+    answer.flag_as_off_topic()
+
+    return jsonify({
+        'answer': answer_id,
+        'is_off_topic': answer.is_off_topic,
     })

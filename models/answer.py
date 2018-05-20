@@ -24,3 +24,7 @@ class Answer(BaseModel):
     def increment_rating(self):
         self.rating += 1
         self.save()
+
+    def flag_as_off_topic(self):
+        self.is_off_topic = 1
+        self.save()
