@@ -1,0 +1,83 @@
+{% extends 'admin/_base.html' %}
+
+{% block head %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="stats_page">
+        <h3>Статистика</h3>
+        На <b>{{ date }}</b> форум имеет:
+        <ul>
+            <li>Пользователей: {{ counts['users'] }}</li>
+            <li>Форумов: {{ counts['forums'] }}</li>
+            <li>Разделов: {{ counts['sections'] }}</li>
+            <li>Тем: {{ counts['threads'] }}</li>
+            <li>Меток тем: {{ counts['labels'] }}</li>
+            <li>Ответов: {{ counts['answers'] }}</li>
+        </ul>
+
+        С
+        <input type="number" min="2000" max="2018" value="2000" class="js--start-year">
+        по
+        <input type="number" min="2000" max="2018" value="2018" class="js--end-year">
+        <input type="button" value="Отобразить" class="js--show-chart">
+
+        <canvas id="chart" width="800" height="400"></canvas>
+    </div>
+
+    <style>
+        .stats_page {
+            font-size: 1.5rem;
+        }
+    </style>
+    <script>
+        $('.js--show-chart').click(() => {
+            getChart(
+                $('.js--start-year').val(),
+                $('.js--end-year').val()
+            );
+        });
+
+        function getChart(startYear, endYear) {
+            $.get(`/admin/statistics/years/?start=${startYear}&end=${endYear}`, (data) => {
+                new Chart(document.getElementById('chart'), {
+                    type: 'line',
+                    data: {
+                        labels: data.years,
+                        datasets: [{
+                                data: data.created_threads,
+                                yAxisID: 'Threads',
+                                label: 'Созданных тем',
+                                borderColor: '#3e95cd',
+                                fill: false
+                            }, {
+                                data: data.registered_users,
+                                yAxisID: 'Users',
+                                label: 'Зарегистрированных пользователей',
+                                borderColor: '#8e5ea2',
+                                fill: false
+                            },
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                id: 'Threads',
+                                type: 'linear',
+                                position: 'left',
+                            }, {
+                                id: 'Users',
+                                type: 'linear',
+                                position: 'right',
+                            }]
+                        },
+                    },
+                });
+            });
+        }
+
+        $('.js--show-chart').click();
+    </script>
+{% endblock %}

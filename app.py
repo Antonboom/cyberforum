@@ -40,11 +40,13 @@ from views.admin import (
     ForumModelView,
     SectionModelView,
     ThreadModelView,
+    StatisticsView,
 )
 admin.add_view(UserModelView(User, 'Пользователи'))
 admin.add_view(ForumModelView(Forum, 'Форумы'))
 admin.add_view(SectionModelView(Section, 'Разделы'))
 admin.add_view(ThreadModelView(Thread, 'Темы'))
+admin.add_view(StatisticsView('Статистика', endpoint='statistics'))
 
 from models import User
 admin_user = User.get(pk_field='username', pk=settings.ADMIN_USERNAME)
