@@ -33,6 +33,8 @@
         }
     </style>
     <script>
+        let chart = null;
+
         $('.js--show-chart').click(() => {
             getChart(
                 $('.js--start-year').val(),
@@ -42,7 +44,11 @@
 
         function getChart(startYear, endYear) {
             $.get(`/admin/statistics/years/?start=${startYear}&end=${endYear}`, (data) => {
-                new Chart(document.getElementById('chart'), {
+                if (chart) {
+                    chart.destroy();
+                }
+
+                chart = new Chart(document.getElementById('chart'), {
                     type: 'line',
                     data: {
                         labels: data.years,
