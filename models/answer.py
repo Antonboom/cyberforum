@@ -20,3 +20,7 @@ class Answer(BaseModel):
     @property
     def created_at_pretty(self):
         return self.created_at.strftime('%d.%m.%Y, %H:%M:%S')
+
+    def increment_rating(self):
+        self.rating += 1
+        self.save()

@@ -155,7 +155,7 @@ if current_answers_count < ANSWERS_COUNT:
                     thread=thread.id,
                     author=user.id,
                     created_at=fake.date_between_dates(date_start=thread.created_at),
-                    rating=random.randint(-100, 100),
+                    rating=random.randint(0, 100),
                     is_off_topic=random.randint(0, 100) < 10,
                 )
                 break

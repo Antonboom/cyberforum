@@ -1,4 +1,5 @@
 from views.admin import *
+from views.answer import *
 from views.errors import *
 from views.index import *
 from views.login import *

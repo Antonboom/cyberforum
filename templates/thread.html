@@ -17,7 +17,7 @@
             </div>
             <div class="thread_page__thread__area">
                 <div class="thread_page__thread__area__author">
-                    <b>{{ author.username }}</b>
+                    <b><a href="/profile/{{ author.id }}">{{ author.username }}</a></b>
 
                     <div class="thread_page__thread__area__author__info">
                         Регистрация: {{ author.registered_at_pretty }}<br>
@@ -50,7 +50,7 @@
             {% for answer in answers %}
                 <div class="thread_page__answers__answer">
                     <div class="thread_page__answers__answer__author">
-                        <b>{{ answer.author.username }}</b>
+                        <b><a href="/profile/{{ answer.author.id }}">{{ answer.author.username }}</a></b>
 
                         <div class="thread_page__answers__answer__author__info">
                             Регистрация: {{ answer.author.registered_at_pretty }}<br>
@@ -73,7 +73,14 @@
                             {{ answer.text }}
                         </div>
                         <div class="thread_page__thread__area__description__rating">
-                            {{ answer.rating or 0 }}
+                            <span class="js--answer-rating">{{ answer.rating or 0 }}</span>
+                            {% if not answer.is_off_topic %}
+                                <div class="js--inc-answer-rating thread_page__thread__area__description__rating__thanks"
+                                     data-answer-id="{{ answer.id }}"
+                                >
+                                    +1 Спасибо
+                                </div>
+                            {% endif %}
                         </div>
                         {% if answer.author.msg_signature %}
                             <div class="thread_page__thread__area__description__signature">
@@ -106,7 +113,7 @@
                             <label for="text">Текст ответа</label><br>
                             <textarea name="text" rows="5" maxlength="65535" required="required"></textarea><br>
 
-                            <input type="hidden" name="next" value="/thread/{{ thread.id }}">
+                            <input type="hidden" name="next" value="/thread/{{ thread.id }}/">
                             <input type="hidden" name="thread" value="{{ thread.id }}">
                         </div>
                         <div class="cyberforum_form__area__controls">
@@ -116,7 +123,7 @@
                 </div>
             {% else %}
                 <div class="thread_page__answer_form__controls">
-                    <a href="/login/?next=/thread/{{ thread.id }}"
+                    <a href="/login/?next=/thread/{{ thread.id }}/"
                        class="cyberforum_btn">
                         Добавить ответ
                     </a>
@@ -161,6 +168,18 @@
             padding: .5rem;
             font-size: 1rem;
         }
+        .thread_page__thread__area__author a,
+        .thread_page__answers__answer__author a {
+            color: black;
+            text-decoration: none;
+        }
+        .thread_page__thread__area__author a:hover,
+        .thread_page__thread__area__author a:focus,
+        .thread_page__answers__answer__author a:hover,
+        .thread_page__answers__answer__author a:focus {
+            color: black;
+            text-decoration: underline;
+        }
         .thread_page__thread__area__author__info,
         .thread_page__answers__answer__author__info {
             margin-top: .5rem;
@@ -195,6 +214,16 @@
             font-size: 1rem;
             margin-top: 1rem;
         }
+        .thread_page__thread__area__description__rating__thanks {
+            float: right;
+            font-size: .9rem;
+            color: #3774A4;
+            font-weight: normal;
+        }
+        .thread_page__thread__area__description__rating__thanks:hover {
+            font-weight: bold;
+            cursor: pointer;
+        }
         .thread_page__thread__area__description__signature {
             font-size: .8rem;
         }
@@ -218,4 +247,15 @@
             margin: 0 auto;
         }
     </style>
+
+    <script>
+        $('.js--inc-answer-rating').on('click', (event) => {
+            const $incButton = $(event.target);
+            const $rating = $incButton.prev('.js--answer-rating');
+
+            $.get(`/inc_answer_rating/${$incButton.data('answer-id')}/`, (data) => {
+                $rating.html(data.rating);
+            });
+        });
+    </script>
 {% endblock %}
