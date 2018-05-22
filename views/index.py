@@ -11,7 +11,7 @@ __all__ = ('index_view',)
 @app.cache.cached(timeout=60 * 60)
 def index_view():
     # TODO(a.telishev): More ORM!
-    threads_count_query = """
+    threads_query = """
         SELECT
             forum.id forum_id,
             forum.title forum_title,
@@ -24,7 +24,7 @@ def index_view():
         INNER JOIN forum ON section.forum = forum.id;
     """
     cursor = get_connector().cursor()
-    cursor.execute(threads_count_query)
+    cursor.execute(threads_query)
 
     # forums = {
     #   forum_id: {

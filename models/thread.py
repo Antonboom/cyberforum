@@ -21,8 +21,6 @@ class Thread(BaseModel):
         'section',
         'author',
         'created_at',
-        'is_important',
-        'rating',
         'last_answer_time',
     )
     search_fields = (

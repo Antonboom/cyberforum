@@ -28,6 +28,7 @@ def section_view(section_id):
         page = 1
 
     threads_count = len(Thread.filter(section=section.id))
+    # FIXME(a.telishev): Threads per page by search
     pages_count = threads_count // THREADS_PER_PAGE
 
     if page > pages_count:

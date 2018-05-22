@@ -63,7 +63,6 @@ class BaseModel:
             DELETE FROM {self.table_name}
             WHERE {self.pk} = {getattr(self, self.pk)};
         """
-
         cursor.execute(query)
         cursor.close()
 

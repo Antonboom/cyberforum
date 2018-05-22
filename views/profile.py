@@ -13,11 +13,16 @@ __all__ = ('profile_view',)
 
 @app.route('/profile/<profile_id>/', methods=('GET',))
 def profile_view(profile_id):
+    if not current_user.is_authenticated:
+        abort(HTTPStatus.NOT_FOUND)
+
+    profile_id = int(profile_id)
+
     user = User.get(profile_id)
     if not user:
         abort(HTTPStatus.NOT_FOUND)
 
-    threads_count = len(Thread.filter(author=current_user.id))
+    threads_count = len(Thread.filter(author=profile_id))
 
     return render_template(
         'profile.html',

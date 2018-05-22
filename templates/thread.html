@@ -50,7 +50,13 @@
             {% for answer in answers %}
                 <div class="thread_page__answers__answer">
                     <div class="thread_page__answers__answer__author">
-                        <b><a href="/profile/{{ answer.author.id }}">{{ answer.author.username }}</a></b>
+                        <b>
+                            {% if current_user.is_authenticated %}
+                                <a href="/profile/{{ answer.author.id }}">{{ answer.author.username }}</a>
+                            {% else %}
+                                {{ answer.author.username }}
+                            {% endif %}
+                        </b>
 
                         <div class="thread_page__answers__answer__author__info">
                             Регистрация: {{ answer.author.registered_at_pretty }}<br>
@@ -84,7 +90,7 @@
                         </div>
                         <div class="thread_page__thread__area__description__rating">
                             <span class="js--answer-rating">{{ answer.rating or 0 }}</span>
-                            {% if not answer.is_off_topic %}
+                            {% if not answer.is_off_topic and current_user.is_authenticated and current_user.id != answer.author.id%}
                                 <div class="js--inc-answer-rating thread_page__thread__area__description__rating__thanks"
                                      data-answer-id="{{ answer.id }}"
                                 >
